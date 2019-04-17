@@ -53,7 +53,6 @@ function ConvertAndUploadToSolarWinds
         $MapFilePath = $(Get-Location).Path + $MapFolderPath + $FileName
         $bytes = [io.file]::ReadAllBytes($MapFilePath)
         
-
         $FileType = $null
         if($FileName -like "*.OrionMap")
         {
@@ -71,14 +70,13 @@ function ConvertAndUploadToSolarWinds
             Write-Host "Uploading (Replacing) $FileName..."
             $ExistingMap = $ExistingMapInformation | Where-Object { $_.FileName -eq $FileName }
             Remove-SwisObject -SwisConnection $SwisConnection -Uri $ExistingMap.Uri
-            New-SwisObject -SwisConnection $SwisConnection -EntityType 'Orion.MapStudioFiles' -Properties @{FileId=$ExistingMap.FileId; FileName=$FileName; TimeStamp= Get-Date -Format "dd-MM-yyyy HH:mm:ss"; FileData=$bytes; Owner=$SwisCredential.UserName; IsDeleted=$false; FileType=$FileType;} > $null
+            New-SwisObject -SwisConnection $SwisConnection -EntityType 'Orion.MapStudioFiles' -Properties @{FileId=$ExistingMap.FileId; FileName=$FileName; TimeStamp= $(Get-Date).DateTime; FileData=$bytes; Owner=$SwisCredential.UserName; IsDeleted=$false; FileType=$FileType;} > $null
         }
         else
         {
             Write-Host "Uploading $FileName..."
-            New-SwisObject -SwisConnection $SwisConnection -EntityType 'Orion.MapStudioFiles' -Properties @{FileName=$FileName; TimeStamp= Get-Date -Format "dd-MM-yyyy HH:mm:ss"; FileData=$bytes; Owner=$SwisCredential.UserName; IsDeleted=$false; FileType=$FileType;} > $null
-        }
-        
+            New-SwisObject -SwisConnection $SwisConnection -EntityType 'Orion.MapStudioFiles' -Properties @{FileName=$FileName; TimeStamp= $(Get-Date).DateTime; FileData=$bytes; Owner=$SwisCredential.UserName; IsDeleted=$false; FileType=$FileType;} > $null
+        }      
     }
 }
 
